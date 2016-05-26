@@ -56,27 +56,26 @@ window.addEventListener("keydown", function (e) {
   if (e.repeat == true) return;
   
   player.direction = MOVE_NONE;
-
-  if (e.keyCode == 87)
-    player.direction = 3;
-  if (e.keyCode == 83)
-    player.direction = 4;
   if (e.keyCode == 65)
     player.direction = 1;
   if (e.keyCode == 68)
     player.direction = 2;
-  //add some naive collision detection
-  if (player.x >= 760) 
-     player.x = 760;
-  else if (player.x <= 9) 
-     player.x = 8;
-  if (player.y > 760) 
-     player.y = 760;
-   else if (player.y <= 9) 
-     player.y = 8;
-    
+  if (e.keyCode == 87)
+    player.direction = 3;
+  if (e.keyCode == 83)
+    player.direction = 4;
   
-  
+  //boundary collision detection
+  if (player.x - 32 <= 0 && player.direction == 1) 
+     player.x = 0
+  if (player.x + 32 >=765  && player.direction == 2) 
+     player.x = 765;
+  if (player.y + 32 >= 765 && player.direction == 4) 
+     player.y = 765;
+  if (player.y - 32 < 0 && player.direction == 3) 
+     player.y = 0;
+  if (player. x <= 40 && player.y >= 725 )
+     alert("u win!!");
   console.log(e.keyCode);
   move();
 });
@@ -97,6 +96,19 @@ PIXI.loader
   .add("spritesheet.json")
   .load(ready);
 
+var background;
+background = world.getObject(backround).data;
+
+
+function check_collision(){
+  var collision = tu.hitTestTile(player, background, 2, world, 'every');
+    if (collision.hit) {
+      stage.removeChildren();
+      alert("hit!");
+      //gameOver();
+    }
+  
+};
 
 
 
@@ -105,36 +117,38 @@ function ready() {
   world = tu.makeTiledWorld("map_json", "map.png");
   stage.addChild(world);
 
+  
+  
   var frame = [];
   frame.push(PIXI.Texture.fromFrame("rolling1.png"));
   frame.push(PIXI.Texture.fromFrame("rolling2.png"));
   frame.push(PIXI.Texture.fromFrame("rolling3.png"));
   frame.push(PIXI.Texture.fromFrame("rolling4.png"));
   
-  
+  var face = world.getObject("face");
   
   
   player = new PIXI.extras.MovieClip(frame);
+  
   player.play();
   player.animationSpeed = 0.1;
-  player.position.x = 0;
-  player.position.y = 144;
+  player.x = face.x;
+  player.y = face.y;
+  player.collisionArea ={
+    x:0,
+    y:0,
+    width: player.width,
+    height: player.heigh
+  };
  
-  world.addChild(player);
+  var entity = world.getObject("Entities");
+  entity.addChild(player);
   player.direction = MOVE_NONE;
   player.moving = false;
   animate();
 }
 
 
-function changeView(view){
-    for(var i = 0; i<stage.children.length; i++){
-        stage.children[i].visible = false;
-        stage.children[i].interactive = false;
-    }
-    view.visible = true;
-    view.interative = true;
-}
 
 
 function animate() {

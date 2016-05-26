@@ -1,5 +1,5 @@
-var GAME_WIDTH = 400;
-var GAME_HEIGHT = 400;
+var GAME_WIDTH = 600;
+var GAME_HEIGHT = 600;
 var GAME_SCALE = 1;
 // var HORIZON_Y = GAME_HEIGHT/GAME_SCALE/2;
 
@@ -35,7 +35,7 @@ function move() {
   console.log("move");
   
   if (player.direction == MOVE_LEFT) 
-    createjs.Tween.get(player).to({x: player.x - 64}, 500).call(move);
+    createjs.Tween.get(player).to({x: player.x - 32}, 500).call(move);
   
   if (player.direction == MOVE_RIGHT)
     createjs.Tween.get(player).to({x: player.x + 32}, 500).call(move);
@@ -80,8 +80,8 @@ PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 
 PIXI.loader
   .add('map_json', 'map.json')
-  .add('tileset', 'map.png')
-  .add('red', 'sillyfacered.png')
+  .add('map', 'map.png')
+  .add('face', 'assets/sillyfaceyellow.png')
   .load(ready);
 
 
@@ -96,12 +96,13 @@ function ready() {
 
   //var red = world.getObject("red");
   
-  player = new PIXI.Sprite(PIXI.loader.resources.red.texture);
+  player = new PIXI.Sprite(PIXI.loader.resources.face.texture);
   //player.x = red.x;
   //player.y = red.y;
   //player.anchor.x = 0.0;
   //player.anchor.y = 1.0;
-  
+  player.position.x = 0;
+  player.position.y = 144;
  
   world.addChild(player);
   //Find the entity layer

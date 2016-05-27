@@ -11,7 +11,7 @@ var renderer = new PIXI.autoDetectRenderer(GAME_WIDTH,
                 
 gameport.appendChild(renderer.view);
 var stage = new PIXI.Container();
-//---------main screen-----------------------------------
+
 
 
 //--------game screen--------------------------------------
@@ -75,7 +75,9 @@ window.addEventListener("keydown", function (e) {
   if (player.y - 32 < 0 && player.direction == 3) 
      player.y = 0;
   if (player. x <= 40 && player.y >= 725 )
-     alert("u win!!");
+     
+     ready();
+     
   console.log(e.keyCode);
   move();
 });
@@ -89,6 +91,9 @@ window.addEventListener("keyup", function onKeyUp(e) {
 
 PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 
+
+
+
 PIXI.loader
   .add('map_json', 'map.json')
   .add('map', 'map.png')
@@ -96,29 +101,13 @@ PIXI.loader
   .add("spritesheet.json")
   .load(ready);
 
-var background;
-background = world.getObject(backround).data;
-
-
-function check_collision(){
-  var collision = tu.hitTestTile(player, background, 2, world, 'every');
-    if (collision.hit) {
-      stage.removeChildren();
-      alert("hit!");
-      //gameOver();
-    }
-  
-};
-
 
 
 function ready() {
-  var tu = new TileUtilities(PIXI);
+  
   world = tu.makeTiledWorld("map_json", "map.png");
   stage.addChild(world);
 
-  
-  
   var frame = [];
   frame.push(PIXI.Texture.fromFrame("rolling1.png"));
   frame.push(PIXI.Texture.fromFrame("rolling2.png"));
@@ -140,6 +129,9 @@ function ready() {
     width: player.width,
     height: player.heigh
   };
+
+
+  background = world.getObject("background").data;
  
   var entity = world.getObject("Entities");
   entity.addChild(player);
@@ -153,7 +145,10 @@ function ready() {
 
 function animate() {
   requestAnimationFrame(animate);
+  //check_collision();
   update_camera();
+  
+  
   renderer.render(stage);
 }
 
@@ -164,3 +159,17 @@ function update_camera() {
   stage.y = -Math.max(0, Math.min(world.worldHeight*GAME_SCALE - GAME_HEIGHT, -stage.y));
 }
 
+
+var tu = new TileUtilities(PIXI);
+var background;
+
+//background = world.getObject("background").data;
+//function check_collision(){
+  var collision = tu.hitTestTile(player, background, 2, world, 'every');
+    if (collision.hit) {
+      
+      alert("hit");      
+      //gameOver();
+    }
+  
+//};
